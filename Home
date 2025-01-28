@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: white;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-view {
+            width: 393px;
+            height: 852px;
+            background: #FFF5EA;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 48px 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+            color: #000;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .card-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+
+        .card-carousel {
+            width: 100%;
+            height: 420px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .card {
+            width: 85%;
+            height: 100%;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            border-radius: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 32px;
+            text-align: center;
+            will-change: transform;
+            transform-origin: center center;
+            transform: translateX(-50%) scale(0.8);
+            opacity: 0;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .card.prev {
+            transform: translateX(-100%) scale(0.85);
+            opacity: 0.7;
+            z-index: 1;
+        }
+
+        .card.current {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .card.next {
+            transform: translateX(0%) scale(0.85);
+            opacity: 0.7;
+            z-index: 1;
+        }
+
+        .card-text {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            line-height: 1.5;
+            color: #333;
+            word-wrap: break-word;
+            max-width: 100%;
+            text-align: center;
+        }
+
+        .author {
+            font-size: 18px;
+            color: #777;
+            margin-top: 12px;
+            font-style: italic;
+            align-self: flex-end; /* Ensure the author is aligned to the bottom of the card */
+        }
+
+        .button {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 9999px;
+            font-size: 20px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            width: fit-content;
+            z-index: 3;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                background: white;
+            }
+            
+            .mobile-view {
+                margin: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-view">
+        <div class="header">
+            <h1 class="title">Swipe to<br>Read and Realise</h1>
+            <p class="subtitle">The Unspoken thoughts and feelings<br>Soulfully</p>
+        </div>
+
+        <div class="card-container">
+            <div class="card-carousel">
+                <!-- Cards will be dynamically added here -->
+            </div>
+        </div>
+
+        <button class="button">Pen Your Feelings</button>
+
+    </div>
+
+    <script>
+        const cardContents = [
+            { content: "Life isn't about finding yourself. Life is about creating yourself.", author: "George Bernard Shaw" },
+            { content: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { content: "Everything you've ever wanted is on the other side of fear.", author: "George Addair" },
+            { content: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+            { content: "Don't count the days, make the days count.", author: "Muhammad Ali" },
+            { content: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+            { content: "The best way to predict the future is to create it.", author: "Abraham Lincoln" },
+            { content: "Every moment is a fresh beginning.", author: "T.S. Eliot" },
+            { content: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+            { content: "The journey of a thousand miles begins with one step.", author: "Lao Tzu" },
+            { content: "It's not what happens to you, but how you react to it that matters.", author: "Epictetus" },
+            { content: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
+            { content: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
+            { content: "Life is what happens while you're busy making other plans.", author: "John Lennon" },
+            { content: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
+            { content: "The purpose of our lives is to be happy.", author: "Dalai Lama" },
+            { content: "Keep your face always toward the sunshine, and shadows will fall behind you.", author: "Walt Whitman" },
+            { content: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar" },
+            { content: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
+            { content: "Light tomorrow with today.", author: "Elizabeth Barrett Browning" }
+        ];
+
+        const carousel = document.querySelector('.card-carousel');
+        let currentCard = 0;
+        let startX = 0;
+        let isDragging = false;
+
+        function updateCards() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.className = 'card';
+                if (index === currentCard) {
+                    card.classList.add('current');
+                } else if (index === (currentCard - 1 + cardContents.length) % cardContents.length) {
+                    card.classList.add('prev');
+                } else if (index === (currentCard + 1) % cardContents.length) {
+                    card.classList.add('next');
+                }
+            });
+        }
+
+        // Create and add cards
+        cardContents.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.backgroundColor = index % 2 === 0 ? '#CB9DF0' : '#F0C1E1';
+            
+            const textDiv = document.createElement('div');
+            textDiv.className = 'card-text';
+            textDiv.textContent = item.content;
+            
+            const authorDiv = document.createElement('div');
+            authorDiv.className = 'author';
+            authorDiv.textContent = `— ${item.author}`;
+            
+            card.appendChild(textDiv);
+            card.appendChild(authorDiv);
+            carousel.appendChild(card);
+        });
+
+        // Initial card setup
+        updateCards();
+
+        // Touch events
+        carousel.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+        });
+
+        carousel.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            const x = e.touches[0].clientX;
+            const walk = startX - x;
+            
+            if (Math.abs(walk) > 20) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        carousel.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            
+            isDragging = false;
+            const x = e.changedTouches[0].clientX;
+            const walk = startX - x;
+            
+            if (Math.abs(walk) > 50) {
+                if (walk > 0) {
+                    currentCard = (currentCard + 1) % cardContents.length;
+                } else {
+                    currentCard = (currentCard - 1 + cardContents.length) % cardContents.length;
+                }
+                updateCards();
+            }
+        });
+    </script>
+</body>
+</html>
