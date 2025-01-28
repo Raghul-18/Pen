@@ -5,154 +5,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Journal App</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-user-select: none; /* Fallback for Safari */
+        user-select: none; /* Standard for other browsers */
+    }
 
+    body {
+        background: white;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .mobile-view {
+        width: 393px;
+        height: 852px;
+        background: #FFF5EA;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        padding: 48px 24px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .title {
+        font-size: 40px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        line-height: 1.2;
+        color: #000;
+    }
+
+    .subtitle {
+        font-size: 20px;
+        color: #666;
+        line-height: 1.5;
+    }
+
+    .card-container {
+        flex: 1;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 40px;
+        perspective: 1000px;
+        transform-style: preserve-3d;
+    }
+
+    .card-carousel {
+        width: 100%;
+        height: 420px;
+        position: relative;
+        overflow: visible;
+    }
+
+    .card {
+        width: 90%;
+        height: 100%;
+        position: absolute;
+        left: 50%;
+        top: 0;
+        border-radius: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.5s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 32px;
+        text-align: center;
+        will-change: transform;
+        transform-origin: center center;
+        transform: translateX(-50%) scale(0.8);
+        opacity: 0;
+        cursor: grab;
+        user-select: none;
+    }
+
+    .card.prev {
+        transform: translateX(-100%) scale(0.85);
+        opacity: 0.7;
+        z-index: 1;
+    }
+
+    .card.current {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+        z-index: 2;
+    }
+
+    .card.next {
+        transform: translateX(0%) scale(0.85);
+        opacity: 0.7;
+        z-index: 1;
+    }
+
+    .card-text {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px; /* Reduced font size */
+        line-height: 1.5;
+        color: #333;
+        word-wrap: break-word;
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .button {
+        background: #333;
+        color: white;
+        border: none;
+        padding: 16px 32px;
+        border-radius: 9999px;
+        font-size: 20px;
+        cursor: pointer;
+        display: block;
+        margin: 0 auto;
+        width: fit-content;
+        z-index: 3;
+    }
+
+    @media (min-width: 768px) {
         body {
             background: white;
-            min-height: 100vh;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .mobile-view {
-            width: 393px;
-            height: 852px;
-            background: #FFF5EA;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            padding: 48px 24px;
+            margin: auto;
         }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .title {
-            font-size: 40px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            line-height: 1.2;
-            color: #000;
-        }
-
-        .subtitle {
-            font-size: 20px;
-            color: #666;
-            line-height: 1.5;
-        }
-
-        .card-container {
-            flex: 1;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 40px;
-            perspective: 1000px;
-            transform-style: preserve-3d;
-        }
-
-        .card-carousel {
-            width: 100%;
-            height: 420px;
-            position: relative;
-            overflow: visible;
-        }
-
-        .card {
-            width: 85%;
-            height: 100%;
-            position: absolute;
-            left: 50%;
-            top: 0;
-            border-radius: 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.5s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 32px;
-            text-align: center;
-            will-change: transform;
-            transform-origin: center center;
-            transform: translateX(-50%) scale(0.8);
-            opacity: 0;
-            cursor: grab;
-            user-select: none;
-        }
-
-        .card.prev {
-            transform: translateX(-100%) scale(0.85);
-            opacity: 0.7;
-            z-index: 1;
-        }
-
-        .card.current {
-            transform: translateX(-50%) scale(1);
-            opacity: 1;
-            z-index: 2;
-        }
-
-        .card.next {
-            transform: translateX(0%) scale(0.85);
-            opacity: 0.7;
-            z-index: 1;
-        }
-
-        .card-text {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            line-height: 1.5;
-            color: #333;
-            word-wrap: break-word;
-            max-width: 100%;
-            text-align: center;
-        }
-
-        .author {
-            font-size: 18px;
-            color: #777;
-            margin-top: 12px;
-            font-style: italic;
-            align-self: flex-end; /* Ensure the author is aligned to the bottom of the card */
-        }
-
-        .button {
-            background: #333;
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 9999px;
-            font-size: 20px;
-            cursor: pointer;
-            display: block;
-            margin: 0 auto;
-            width: fit-content;
-            z-index: 3;
-        }
-
-        @media (min-width: 768px) {
-            body {
-                background: white;
-            }
-            
-            .mobile-view {
-                margin: auto;
-            }
-        }
+    }
     </style>
 </head>
 <body>
@@ -167,33 +161,45 @@
                 <!-- Cards will be dynamically added here -->
             </div>
         </div>
-
-        <button class="button">Pen Your Feelings</button>
-
     </div>
 
     <script>
         const cardContents = [
-            { content: "Life isn't about finding yourself. Life is about creating yourself.", author: "George Bernard Shaw" },
-            { content: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-            { content: "Everything you've ever wanted is on the other side of fear.", author: "George Addair" },
-            { content: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-            { content: "Don't count the days, make the days count.", author: "Muhammad Ali" },
-            { content: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
-            { content: "The best way to predict the future is to create it.", author: "Abraham Lincoln" },
-            { content: "Every moment is a fresh beginning.", author: "T.S. Eliot" },
-            { content: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
-            { content: "The journey of a thousand miles begins with one step.", author: "Lao Tzu" },
-            { content: "It's not what happens to you, but how you react to it that matters.", author: "Epictetus" },
-            { content: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
-            { content: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
-            { content: "Life is what happens while you're busy making other plans.", author: "John Lennon" },
-            { content: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
-            { content: "The purpose of our lives is to be happy.", author: "Dalai Lama" },
-            { content: "Keep your face always toward the sunshine, and shadows will fall behind you.", author: "Walt Whitman" },
-            { content: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar" },
-            { content: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
-            { content: "Light tomorrow with today.", author: "Elizabeth Barrett Browning" }
+            { content: "I don't understand one thing. We all say we moved on and still visit their profile picture why?." },
+            { content: "I don't actually like dates. I get awkward as I never know what to do." },
+            { content: "Searching songs for post is a pain in the ass." },
+            { content: "Some souls suffer alone, fight alone. They heal, they win." },
+            { content: "My flex is I can heal me without anyones help." },
+            { content: "Sorry, I didn’t see things the way you see me. You’re my good friend. But how do I call those happy memories? You love the way I call you. Our late-night calls, texting even when we're busy, and you saying I'm the right one for you. You showed my pictures to your mom, telling her I'm the most beautiful girl. You said you would take me wherever you go,"},
+            { content: "You'd be ready to apologize first because you never want to lose me at any cost. We used to say it's hard to live without each other. You love my hair, eyes, and my smile. You always make time to see me. We talk about love, and you say I'm a kid to you, promising that you'll always be by my side to take care of me. And I'll miss your cute possessiveness when I talk to other boys. All these memories will be unforgettable, and thank you for them." },
+            { content: "Being loved is the minimum. Make sure you're also valued, respected, prioritized, desired, heard, understood and supported" },
+            { content: "Don't force anything. Always listen to your heart and take decisions wisely." },
+            { content: "When a girl wants to change her life. She cuts her hair. When a women wants to change her life. She cuts people." },
+            { content: "I got no time forcing anything. You talk, I talk, Tou don't, I don't." },
+            { content: "If I let you go, it's because I need to be happy, with or without you in my life." },
+            { content: "Time takes us where we need to." },
+            { content: "You will realise when you read old chats. You have gone throught a lot by begging the wrong one in your life and you believed all the fake promises. But still you didn't give up on yourseld. Happy days are coming keep shining." },
+            { content: "If it is not love then why do you care." },
+            { content: "Okay they never admit their mistake, but deep inside they know what they did." },
+            { content: "If you feel heavy right now just sleep. Good Night." },
+            { content: "Those unforgettable eye contact.." },
+            { content: "If you don't treat her right, don't be pissed or surprised when someone else does. Taking a woman for granted leads to just one place, Her finding someone who appreciates her for HER." },
+            { content: "Me wondering how I survived all those tough times in my life I thought I never would, It was very hard for me to wake up the next day. Dont know why I loved so much without getting anything in return. Which is very stupid now. Now I'm here not regretting but thankful for the lesson. They changed me into a who I am today." },
+            { content: "I hate that I have to heal from things that weren'e my fault." },
+            { content: "If a woman doesn't feel safe around you, you have failed as a man. It is your responsibility to drop her home safe without abusing her mentally and physically." },
+            { content: "And suddenly you feel  that he is the one." },
+            { content: "I'm in my calm era. I just pray now and let things be." },
+            { content: "There is love in holding and, There is love in letting go." },
+            { content: "Adulting is realising that all you need is a stable income, a supportive partner and a peaceful home." },
+            { content: "The monster you saw at the end of your relationship is who they really are." },
+            { content: "When God wants to bless a man, He gives him a quality women." },
+            { content: "There is love in holding and, There is love in letting go." },
+            { content: "For a girl, her partner's birthday is basically her second birthday." },
+            { content: "There is love in holding and, There is love in letting go." },
+            { content: "I might be a little toxic but atleast I'm loyal" },
+            { content: "I hate myself for thinking about you once again." },
+            { content: "If you treat each other right, just like you did in the beginning, there will never be an end." },
+            { content: "There is love in holding and, There is love in letting go." },
         ];
 
         const carousel = document.querySelector('.card-carousel');
@@ -216,21 +222,18 @@
         }
 
         // Create and add cards
+        const colors = ['#CB9DF0', '#F0C1E1', '#FDDBBB', '#FFF9BF'];
+
         cardContents.forEach((item, index) => {
             const card = document.createElement('div');
             card.className = 'card';
-            card.style.backgroundColor = index % 2 === 0 ? '#CB9DF0' : '#F0C1E1';
+            card.style.backgroundColor = colors[index % colors.length];  // Cycles through the 4 colors
             
             const textDiv = document.createElement('div');
             textDiv.className = 'card-text';
             textDiv.textContent = item.content;
             
-            const authorDiv = document.createElement('div');
-            authorDiv.className = 'author';
-            authorDiv.textContent = `— ${item.author}`;
-            
             card.appendChild(textDiv);
-            card.appendChild(authorDiv);
             carousel.appendChild(card);
         });
 
