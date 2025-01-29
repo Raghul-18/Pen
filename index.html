@@ -20,6 +20,155 @@
             font-size: 20px;
             cursor: pointer;
         }
+
+        .popup-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.3);
+            text-align: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 85%;
+            width: 320px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .popup-card.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        .popup-content {
+            color: #fff;
+            font-size: 20px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .popup-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        /* Farewell Screen */
+        .farewell-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease;
+        }
+
+        .farewell-screen.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .farewell-text {
+            color: white;
+            font-size: 32px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .farewell-screen.show .farewell-text {
+            animation: farewell 2s ease forwards;
+        }
+
+        /* Particle Effects */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: particleFloat 3s ease-in infinite;
+        }
+
+        /* Animations */
+        @keyframes heartbeat {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            14% { transform: translate(-50%, -50%) scale(1.1); }
+            28% { transform: translate(-50%, -50%) scale(1); }
+            42% { transform: translate(-50%, -50%) scale(1.1); }
+            70% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes farewell {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: white;
+            animation: sparkle 1.5s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes sparkle {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
     </style>
 </head>
 <body>
@@ -48,52 +197,77 @@
                     <!-- Cards will be dynamically added here -->
                 </div>
             </div>
+
+            <button class="button">For You</button>
         </div>
     </div>
 
     <button id="mute-btn">🔊</button>
 
+    <div class="popup-card">
+        <div class="popup-content">
+            In this moment, my heart beats with the rhythm of pure love. Every second with you feels like an eternity of happiness. Love you ❤️
+        </div>
+    </div>
+
+    <div class="farewell-screen">
+        <div class="farewell-text">Goodbye...</div>
+    </div>
+
     <script>
         const cardContents = [
-            { content: "I don't understand one thing. We all say we moved on and still visit their profile picture why?.", song: "music/music1.mp3" },
-            { content: "I don't actually like dates. I get awkward as I never know what to do.", song: "song2.mp3" },
-            { content: "Searching songs for post is a pain in the ass.", song: "song3.mp3" },
-            { content: "Some souls suffer alone, fight alone. They heal, they win.", song: "song4.mp3" },
-            { content: "My flex is I can heal me without anyone's help.", song: "song5.mp3" },
-            { content: "Sorry, I didn’t see things the way you see me. You’re my good friend. But how do I call those happy memories? You love the way I call you. Our late-night calls, texting even when we're busy, and you saying I'm the right one for you. You showed my pictures to your mom, telling her I'm the most beautiful girl.", song: "song6.mp3" },
-            { content: "Being loved is the minimum. Make sure you're also valued, respected, prioritized, desired, heard, understood and supported.", song: "song7.mp3" },
-            { content: "Don't force anything. Always listen to your heart and take decisions wisely.", song: "song8.mp3" },
-            { content: "When a girl wants to change her life. She cuts her hair. When a woman wants to change her life. She cuts people.", song: "song9.mp3" },
-            { content: "I got no time forcing anything. You talk, I talk, You don't, I don't.", song: "song10.mp3" },
-            { content: "If I let you go, it's because I need to be happy, with or without you in my life.", song: "song11.mp3" },
-            { content: "Time takes us where we need to.", song: "song12.mp3" },
-            { content: "You will realise when you read old chats. You have gone through a lot by begging the wrong one in your life and you believed all the fake promises. But still you didn't give up on yourself. Happy days are coming, keep shining.", song: "song13.mp3" },
-            { content: "If it is not love then why do you care.", song: "song14.mp3" },
-            { content: "Okay, they never admit their mistake, but deep inside they know what they did.", song: "song15.mp3" },
-            { content: "If you feel heavy right now just sleep. Good Night.", song: "song16.mp3" },
-            { content: "Those unforgettable eye contact..", song: "song17.mp3" },
-            { content: "If you don't treat her right, don't be pissed or surprised when someone else does. Taking a woman for granted leads to just one place, Her finding someone who appreciates her for HER.", song: "song18.mp3" },
-            { content: "Me wondering how I survived all those tough times in my life I thought I never would, It was very hard for me to wake up the next day. Don't know why I loved so much without getting anything in return. Which is very stupid now. Now I'm here not regretting but thankful for the lesson. They changed me into who I am today.", song: "song19.mp3" },
-            { content: "I hate that I have to heal from things that weren't my fault.", song: "song20.mp3" },
-            { content: "If a woman doesn't feel safe around you, you have failed as a man. It is your responsibility to drop her home safe without abusing her mentally and physically.", song: "song21.mp3" },
-            { content: "And suddenly you feel that he is the one.", song: "song22.mp3" },
-            { content: "I'm in my calm era. I just pray now and let things be.", song: "song23.mp3" },
-            { content: "There is love in holding and, There is love in letting go.", song: "song24.mp3" },
-            { content: "Adulting is realising that all you need is a stable income, a supportive partner and a peaceful home.", song: "song25.mp3" },
-            { content: "The monster you saw at the end of your relationship is who they really are.", song: "song26.mp3" },
-            { content: "When God wants to bless a man, He gives him a quality woman.", song: "song27.mp3" },
-            { content: "For a girl, her partner's birthday is basically her second birthday.", song: "song28.mp3" },
-            { content: "I might be a little toxic but at least I'm loyal.", song: "song29.mp3" },
-            { content: "I hate myself for thinking about you once again.", song: "song30.mp3" },
-            { content: "If you treat each other right, just like you did in the beginning, there will never be an end.", song: "song31.mp3" },
+            { content: "I don't understand one thing. We all say we moved on and still visit their profile picture why?." },
+            { content: "I don't actually like dates. I get awkward as I never know what to do." },
+            { content: "Searching songs for post is a pain in the ass." },
+            { content: "Some souls suffer alone, fight alone. They heal, they win." },
+            { content: "My flex is I can heal me without anyone's help." },
+            { content: "Sorry, I didn’t see things the way you see me. You’re my good friend. But how do I call those happy memories? You love the way I call you. Our late-night calls, texting even when we're busy, and you saying I'm the right one for you. You showed my pictures to your mom, telling her I'm the most beautiful girl. You said you would take me wherever you go,"},
+            { content: "You'd be ready to apologize first because you never want to lose me at any cost. We used to say it's hard to live without each other. You love my hair, eyes, and my smile. You always make time to see me. We talk about love, and you say I'm a kid to you, promising that you'll always be by my side to take care of me. And I'll miss your cute possessiveness when I talk to other boys. All these memories will be unforgettable, and thank you for them." },
+            { content: "Being loved is the minimum. Make sure you're also valued, respected, prioritized, desired, heard, understood and supported" },
+            { content: "Don't force anything. Always listen to your heart and take decisions wisely." },
+            { content: "When a girl wants to change her life. She cuts her hair. When a woman wants to change her life. She cuts people." },
+            { content: "I got no time forcing anything. You talk, I talk, You don't, I don't." },
+            { content: "If I let you go, it's because I need to be happy, with or without you in my life." },
+            { content: "Time takes us where we need to." },
+            { content: "You will realise when you read old chats. You have gone through a lot by begging the wrong one in your life and you believed all the fake promises. But still you didn't give up on yourself. Happy days are coming, keep shining." },
+            { content: "If it is not love then why do you care." },
+            { content: "Okay, they never admit their mistake, but deep inside they know what they did." },
+            { content: "If you feel heavy right now just sleep. Good Night." },
+            { content: "Those unforgettable eye contact.." },
+            { content: "If you don't treat her right, don't be pissed or surprised when someone else does. Taking a woman for granted leads to just one place, Her finding someone who appreciates her for HER." },
+            { content: "Me wondering how I survived all those tough times in my life I thought I never would, It was very hard for me to wake up the next day. Don't know why I loved so much without getting anything in return. Which is very stupid now. Now I'm here not regretting but thankful for the lesson. They changed me into who I am today." },
+            { content: "I hate that I have to heal from things that weren't my fault." },
+            { content: "If a woman doesn't feel safe around you, you have failed as a man. It is your responsibility to drop her home safe without abusing her mentally and physically." },
+            { content: "And suddenly you feel that he is the one." },
+            { content: "I'm in my calm era. I just pray now and let things be." },
+            { content: "There is love in holding and, There is love in letting go." },
+            { content: "Adulting is realising that all you need is a stable income, a supportive partner and a peaceful home." },
+            { content: "The monster you saw at the end of your relationship is who they really are." },
+            { content: "When God wants to bless a man, He gives him a quality woman." },
+            { content: "There is love in holding and, There is love in letting go." },
+            { content: "For a girl, her partner's birthday is basically her second birthday." },
+            { content: "There is love in holding and, There is love in letting go." },
+            { content: "I might be a little toxic but at least I'm loyal" },
+            { content: "I hate myself for thinking about you once again." },
+            { content: "If you treat each other right, just like you did in the beginning, there will never be an end." },
+            { content: "There is love in holding and, There is love in letting go." },
         ];
+
+        // Music list
+        const musicList = [
+            "music/music1.mp3",
+            "song2.mp3",
+            "song3.mp3", // Add your MP3 file names here
+        ];
+
+        let currentMusic = new Audio();
+        let isMuted = false;
 
         // Initialize the carousel
         const carousel = document.querySelector('.card-carousel');
         let currentCard = 0;
         let startX = 0;
         let isDragging = false;
-        let activeAudio = null; // To keep track of currently playing song
 
         // Card colors
         const colors = ['#CB9DF0', '#F0C1E1', '#FDDBBB', '#FFF9BF'];
@@ -112,6 +286,19 @@
             });
         }
 
+        function playRandomSong() {
+            const randomIndex = Math.floor(Math.random() * musicList.length);
+            currentMusic.src = musicList[randomIndex];
+            currentMusic.play().catch((error) => console.log('Error playing music:', error));
+        }
+
+        // Mute/Unmute functionality
+        document.getElementById("mute-btn").addEventListener("click", () => {
+            isMuted = !isMuted;
+            currentMusic.muted = isMuted;
+            document.getElementById("mute-btn").textContent = isMuted ? '🔇' : '🔊';
+        });
+
         // Create and add cards
         cardContents.forEach((item, index) => {
             const card = document.createElement('div');
@@ -124,34 +311,6 @@
             
             card.appendChild(textDiv);
             carousel.appendChild(card);
-        });
-
-        function playSongForCard(cardIndex) {
-            // Stop any currently playing audio
-            if (activeAudio) {
-                activeAudio.pause();
-                activeAudio.currentTime = 0;
-            }
-
-            // Play the new song
-            const song = cardContents[cardIndex].song;
-            activeAudio = new Audio(song);
-            activeAudio.play();
-        }
-
-        // Mute/Unmute functionality
-        let isMuted = false;
-        const muteButton = document.getElementById('mute-btn');
-
-        muteButton.addEventListener('click', () => {
-            isMuted = !isMuted;
-            if (isMuted) {
-                activeAudio && (activeAudio.muted = true);
-                muteButton.textContent = '🔇';
-            } else {
-                activeAudio && (activeAudio.muted = false);
-                muteButton.textContent = '🔊';
-            }
         });
 
         // Touch events
@@ -185,7 +344,7 @@
                     currentCard = (currentCard - 1 + cardContents.length) % cardContents.length;
                 }
                 updateCards();
-                playSongForCard(currentCard); // Play song for the current card
+                playRandomSong(); // Change song when swiping a card
             }
         });
 
@@ -197,8 +356,74 @@
             setTimeout(() => {
                 document.getElementById('loading-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'flex';
-                playSongForCard(currentCard); // Play song for the first card
+                playRandomSong(); // Play song after loading
             }, 7000);
+        });
+
+        const popupMusic = new Audio('music/music1.mp3');
+        const popupCard = document.querySelector('.popup-card');
+        const farewellScreen = document.querySelector('.farewell-screen');
+        const forYouButton = document.querySelector('.button');
+
+        // Create sparkles around the popup
+        function createSparkles() {
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = `${Math.random() * 100}%`;
+                sparkle.style.top = `${Math.random() * 100}%`;
+                sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                popupCard.appendChild(sparkle);
+            }
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const particles = ['✨', '💖', '✨', '🌟'];
+            for (let i = 0; i < 60; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.setProperty('--tx', `${(Math.random() - 0.5) * 200}px`);
+                particle.style.setProperty('--ty', `${-Math.random() * 200}px`);
+                particle.style.animationDelay = `${Math.random() * 2}s`;
+                document.body.appendChild(particle);
+            }
+        }
+
+        forYouButton.addEventListener('click', () => {
+            currentMusic.pause();
+            popupCard.classList.add('show');
+            popupMusic.play().catch(error => console.log('Error playing popup music:', error));
+            
+            createSparkles();
+            createParticles();
+
+            // Set timeout for farewell sequence
+            setTimeout(() => {
+                popupCard.style.transition = 'all 1s ease';
+                popupCard.style.opacity = '0';
+                popupMusic.volume = 0;
+                
+                farewellScreen.classList.add('show');
+                
+                // Remove particles after farewell
+                setTimeout(() => {
+                    const particles = document.querySelectorAll('.particle');
+                    particles.forEach(particle => particle.remove());
+                }, 1000);
+                
+            }, 28000); // 30 seconds
+        });
+
+        // Optional: Click to dismiss early
+        popupCard.addEventListener('click', () => {
+            popupCard.classList.remove('show');
+            popupMusic.pause();
+            popupMusic.currentTime = 0;
+            currentMusic.play().catch(error => console.log('Error resuming main music:', error));
         });
     </script>
 </body>
