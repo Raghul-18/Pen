@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfully</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Floating mute button */
+        #mute-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ff5a5f;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 15px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .popup-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.3);
+            text-align: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 85%;
+            width: 320px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .popup-card.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        .popup-content {
+            color: #fff;
+            font-size: 20px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .popup-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        /* Farewell Screen */
+        .farewell-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease;
+        }
+
+        .farewell-screen.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .farewell-text {
+            color: white;
+            font-size: 32px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .farewell-screen.show .farewell-text {
+            animation: farewell 2s ease forwards;
+        }
+
+        /* Particle Effects */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: particleFloat 3s ease-in infinite;
+        }
+
+        /* Animations */
+        @keyframes heartbeat {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            14% { transform: translate(-50%, -50%) scale(1.1); }
+            28% { transform: translate(-50%, -50%) scale(1); }
+            42% { transform: translate(-50%, -50%) scale(1.1); }
+            70% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes farewell {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: white;
+            animation: sparkle 1.5s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes sparkle {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h1 class="loading-title">Soulfully
+                <div class="aurora">
+                    <div class="aurora__item"></div>
+                    <div class="aurora__item"></div>
+                    <div class="aurora__item"></div>
+                    <div class="aurora__item"></div>
+                </div>
+            </h1>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <div class="mobile-view">
+            <div class="header">
+                <h1 class="title">Swipe to<br>Read and Realise</h1>
+                <p class="subtitle">The Unspoken thoughts and feelings<br>Take your time, read and realise soulfully</p>
+            </div>
+
+            <div class="card-container">
+                <div class="card-carousel">
+                    <!-- Cards will be dynamically added here -->
+                </div>
+            </div>
+
+            <button class="button">For You</button>
+        </div>
+    </div>
+
+    <button id="mute-btn">🔊</button>
+
+    <div class="popup-card">
+        <div class="popup-content">
+            In this moment, my heart beats with the rhythm of pure love. Every second with you feels like an eternity of happiness. Love you ❤️
+        </div>
+    </div>
+
+    <div class="farewell-screen">
+        <div class="farewell-text">Goodbye...</div>
+    </div>
+
+    <script>
+        const cardContents = [
+            { content: "I don't understand one thing. We all say we moved on and still visit their profile picture why?." },
+            { content: "I don't actually like dates. I get awkward as I never know what to do." },
+            { content: "Searching songs for post is a pain in the ass." },
+            { content: "Some souls suffer alone, fight alone. They heal, they win." },
+            { content: "My flex is I can heal me without anyone's help." },
+            { content: "Sorry, I didn’t see things the way you see me. You’re my good friend. But how do I call those happy memories? You love the way I call you. Our late-night calls, texting even when we're busy, and you saying I'm the right one for you. You showed my pictures to your mom, telling her I'm the most beautiful girl. You said you would take me wherever you go,"},
+            { content: "You'd be ready to apologize first because you never want to lose me at any cost. We used to say it's hard to live without each other. You love my hair, eyes, and my smile. You always make time to see me. We talk about love, and you say I'm a kid to you, promising that you'll always be by my side to take care of me. And I'll miss your cute possessiveness when I talk to other boys. All these memories will be unforgettable, and thank you for them." },
+            { content: "Being loved is the minimum. Make sure you're also valued, respected, prioritized, desired, heard, understood and supported" },
+            { content: "Don't force anything. Always listen to your heart and take decisions wisely." },
+            { content: "When a girl wants to change her life. She cuts her hair. When a woman wants to change her life. She cuts people." },
+            { content: "I got no time forcing anything. You talk, I talk, You don't, I don't." },
+            { content: "If I let you go, it's because I need to be happy, with or without you in my life." },
+            { content: "Time takes us where we need to." },
+            { content: "You will realise when you read old chats. You have gone through a lot by begging the wrong one in your life and you believed all the fake promises. But still you didn't give up on yourself. Happy days are coming, keep shining." },
+            { content: "If it is not love then why do you care." },
+            { content: "Okay, they never admit their mistake, but deep inside they know what they did." },
+            { content: "If you feel heavy right now just sleep. Good Night." },
+            { content: "Those unforgettable eye contact.." },
+            { content: "If you don't treat her right, don't be pissed or surprised when someone else does. Taking a woman for granted leads to just one place, Her finding someone who appreciates her for HER." },
+            { content: "Me wondering how I survived all those tough times in my life I thought I never would, It was very hard for me to wake up the next day. Don't know why I loved so much without getting anything in return. Which is very stupid now. Now I'm here not regretting but thankful for the lesson. They changed me into who I am today." },
+            { content: "I hate that I have to heal from things that weren't my fault." },
+            { content: "If a woman doesn't feel safe around you, you have failed as a man. It is your responsibility to drop her home safe without abusing her mentally and physically." },
+            { content: "And suddenly you feel that he is the one." },
+            { content: "I'm in my calm era. I just pray now and let things be." },
+            { content: "There is love in holding and, There is love in letting go." },
+            { content: "Adulting is realising that all you need is a stable income, a supportive partner and a peaceful home." },
+            { content: "The monster you saw at the end of your relationship is who they really are." },
+            { content: "When God wants to bless a man, He gives him a quality woman." },
+            { content: "There is love in holding and, There is love in letting go." },
+            { content: "For a girl, her partner's birthday is basically her second birthday." },
+            { content: "There is love in holding and, There is love in letting go." },
+            { content: "I might be a little toxic but at least I'm loyal" },
+            { content: "I hate myself for thinking about you once again." },
+            { content: "If you treat each other right, just like you did in the beginning, there will never be an end." },
+            { content: "There is love in holding and, There is love in letting go." },
+        ];
+
+        // Music list
+        const musicList = [
+            "music/music1.mp3",
+            "song2.mp3",
+            "song3.mp3", // Add your MP3 file names here
+        ];
+
+        let currentMusic = new Audio();
+        let isMuted = false;
+
+        // Initialize the carousel
+        const carousel = document.querySelector('.card-carousel');
+        let currentCard = 0;
+        let startX = 0;
+        let isDragging = false;
+
+        // Card colors
+        const colors = ['#CB9DF0', '#F0C1E1', '#FDDBBB', '#FFF9BF'];
+
+        function updateCards() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.className = 'card';
+                if (index === currentCard) {
+                    card.classList.add('current');
+                } else if (index === (currentCard - 1 + cardContents.length) % cardContents.length) {
+                    card.classList.add('prev');
+                } else if (index === (currentCard + 1) % cardContents.length) {
+                    card.classList.add('next');
+                }
+            });
+        }
+
+        function playRandomSong() {
+            const randomIndex = Math.floor(Math.random() * musicList.length);
+            currentMusic.src = musicList[randomIndex];
+            currentMusic.play().catch((error) => console.log('Error playing music:', error));
+        }
+
+        // Mute/Unmute functionality
+        document.getElementById("mute-btn").addEventListener("click", () => {
+            isMuted = !isMuted;
+            currentMusic.muted = isMuted;
+            document.getElementById("mute-btn").textContent = isMuted ? '🔇' : '🔊';
+        });
+
+        // Create and add cards
+        cardContents.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.backgroundColor = colors[index % colors.length];
+            
+            const textDiv = document.createElement('div');
+            textDiv.className = 'card-text';
+            textDiv.textContent = item.content;
+            
+            card.appendChild(textDiv);
+            carousel.appendChild(card);
+        });
+
+        // Touch events
+        carousel.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+        });
+
+        carousel.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            const x = e.touches[0].clientX;
+            const walk = startX - x;
+            
+            if (Math.abs(walk) > 20) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        carousel.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            
+            isDragging = false;
+            const x = e.changedTouches[0].clientX;
+            const walk = startX - x;
+            
+            if (Math.abs(walk) > 50) {
+                if (walk > 0) {
+                    currentCard = (currentCard + 1) % cardContents.length;
+                } else {
+                    currentCard = (currentCard - 1 + cardContents.length) % cardContents.length;
+                }
+                updateCards();
+                playRandomSong(); // Change song when swiping a card
+            }
+        });
+
+        // Initial card setup
+        updateCards();
+
+        // Loading screen timer
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'flex';
+                playRandomSong(); // Play song after loading
+            }, 7000);
+        });
+
+        const popupMusic = new Audio('music/music1.mp3');
+        const popupCard = document.querySelector('.popup-card');
+        const farewellScreen = document.querySelector('.farewell-screen');
+        const forYouButton = document.querySelector('.button');
+
+        // Create sparkles around the popup
+        function createSparkles() {
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = `${Math.random() * 100}%`;
+                sparkle.style.top = `${Math.random() * 100}%`;
+                sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                popupCard.appendChild(sparkle);
+            }
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const particles = ['✨', '💖', '✨', '🌟'];
+            for (let i = 0; i < 60; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.setProperty('--tx', `${(Math.random() - 0.5) * 200}px`);
+                particle.style.setProperty('--ty', `${-Math.random() * 200}px`);
+                particle.style.animationDelay = `${Math.random() * 2}s`;
+                document.body.appendChild(particle);
+            }
+        }
+
+        forYouButton.addEventListener('click', () => {
+            currentMusic.pause();
+            popupCard.classList.add('show');
+            popupMusic.play().catch(error => console.log('Error playing popup music:', error));
+            
+            createSparkles();
+            createParticles();
+
+            // Set timeout for farewell sequence
+            setTimeout(() => {
+                popupCard.style.transition = 'all 1s ease';
+                popupCard.style.opacity = '0';
+                popupMusic.volume = 0;
+                
+                farewellScreen.classList.add('show');
+                
+                // Remove particles after farewell
+                setTimeout(() => {
+                    const particles = document.querySelectorAll('.particle');
+                    particles.forEach(particle => particle.remove());
+                }, 1000);
+                
+            }, 28000); // 30 seconds
+        });
+
+        // Optional: Click to dismiss early
+        popupCard.addEventListener('click', () => {
+            popupCard.classList.remove('show');
+            popupMusic.pause();
+            popupMusic.currentTime = 0;
+            currentMusic.play().catch(error => console.log('Error resuming main music:', error));
+        });
+    </script>
+</body>
+</html>
