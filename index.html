@@ -21,6 +21,42 @@
             cursor: pointer;
         }
 
+
+        /* Add blur effect to main content when popup shows */
+        #main-content {
+            transition: filter 0.3s ease;
+        }
+
+        body.popup-active {
+            overflow: hidden; /* Prevents scrolling when popup is active */
+        }
+
+        body.popup-active #main-content {
+            filter: blur(10px);
+        }
+
+        /* Ensure mute button stays fixed on screen */
+        #mute-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1001; /* Higher than popup z-index */
+        }
+
+        .button {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 9999px;
+            font-size: 20px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            width: fit-content;
+            z-index: 3;
+        }
+
         .popup-card {
             position: fixed;
             top: 50%;
@@ -35,10 +71,12 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 85%;
+            max-width: 85vh;
             width: 320px;
             border: 2px solid rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(10px);
+            overflow-y: none;
+            max-height: 95vh;
         }
 
         .popup-card.show {
@@ -102,7 +140,7 @@
 
         /* Particle Effects */
         .particle {
-            position: absolute;
+            position: fixed;
             pointer-events: none;
             animation: particleFloat 3s ease-in infinite;
         }
@@ -255,7 +293,7 @@
 
         // Music list
         const musicList = [
-            "music1.mp3",
+            "music/music1.mp3",
             "song2.mp3",
             "song3.mp3", // Add your MP3 file names here
         ];
@@ -296,6 +334,7 @@
         document.getElementById("mute-btn").addEventListener("click", () => {
             isMuted = !isMuted;
             currentMusic.muted = isMuted;
+            popupMusic.muted = isMuted;
             document.getElementById("mute-btn").textContent = isMuted ? '🔇' : '🔊';
         });
 
@@ -360,14 +399,14 @@
             }, 7000);
         });
 
-        const popupMusic = new Audio('music1.mp3');
+        const popupMusic = new Audio('music/music1.mp3');
         const popupCard = document.querySelector('.popup-card');
         const farewellScreen = document.querySelector('.farewell-screen');
         const forYouButton = document.querySelector('.button');
 
         // Create sparkles around the popup
         function createSparkles() {
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 50; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'sparkle';
                 sparkle.style.left = `${Math.random() * 100}%`;
@@ -380,7 +419,7 @@
         // Create floating particles
         function createParticles() {
             const particles = ['✨', '💖', '✨', '🌟'];
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < 120; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 particle.textContent = particles[Math.floor(Math.random() * particles.length)];
@@ -394,37 +433,40 @@
         }
 
         forYouButton.addEventListener('click', () => {
-            currentMusic.pause();
-            popupCard.classList.add('show');
-            popupMusic.play().catch(error => console.log('Error playing popup music:', error));
+        currentMusic.pause();
+        popupCard.classList.add('show');
+        document.body.classList.add('popup-active'); // Add class to body
+        popupMusic.muted = isMuted;
+        popupMusic.play().catch(error => console.log('Error playing popup music:', error));
+        
+        createSparkles();
+        createParticles();
+
+        setTimeout(() => {
+            popupCard.style.transition = 'all 1s ease';
+            popupCard.style.opacity = '0';
+            popupMusic.volume = 0;
+            document.body.classList.remove('popup-active'); // Remove class from body
             
-            createSparkles();
-            createParticles();
-
-            // Set timeout for farewell sequence
+            farewellScreen.classList.add('show');
+            
             setTimeout(() => {
-                popupCard.style.transition = 'all 1s ease';
-                popupCard.style.opacity = '0';
-                popupMusic.volume = 0;
-                
-                farewellScreen.classList.add('show');
-                
-                // Remove particles after farewell
-                setTimeout(() => {
-                    const particles = document.querySelectorAll('.particle');
-                    particles.forEach(particle => particle.remove());
-                }, 1000);
-                
-            }, 28000); // 30 seconds
-        });
+                const particles = document.querySelectorAll('.particle');
+                particles.forEach(particle => particle.remove());
+            }, 1000);
+            
+        }, 28000);
+    });
 
-        // Optional: Click to dismiss early
-        popupCard.addEventListener('click', () => {
-            popupCard.classList.remove('show');
-            popupMusic.pause();
-            popupMusic.currentTime = 0;
-            currentMusic.play().catch(error => console.log('Error resuming main music:', error));
-        });
+    // Update popup click handler
+    popupCard.addEventListener('click', () => {
+        popupCard.classList.remove('show');
+        document.body.classList.remove('popup-active'); // Remove class from body
+        popupMusic.pause();
+        popupMusic.currentTime = 0;
+        currentMusic.play().catch(error => console.log('Error resuming main music:', error));
+    });
+
     </script>
 </body>
 </html>
