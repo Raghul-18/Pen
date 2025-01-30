@@ -10,6 +10,13 @@
     --ls: clamp(-1.75px, -0.25vw, -3.5px);
 }
 
+@supports (padding-top: env(safe-area-inset-top)) {
+    :root {
+        --sab: env(safe-area-inset-bottom); /* Status bar height */
+        --sat: env(safe-area-inset-top);    /* Top safe area */
+    }
+}
+
 /* Global Styles */
 * {
     margin: 0;
@@ -17,6 +24,15 @@
     box-sizing: border-box;
     -webkit-user-select: none;
     user-select: none;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
 }
 
 body {
@@ -109,42 +125,55 @@ body {
 /* Main Content Styles */
 #main-content {
     display: none;
+    width: 100%;
+    /* Use CSS custom properties for dynamic sizing */
+    height: 100dvh; /* Modern browsers */
+    height: calc(100vh - var(--sab, 0px) - var(--sat, 0px)); /* Fallback considering safe areas */
+    margin: 0;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
+    overflow: hidden;
     background: white;
-    min-height: 100vh;
-    justify-content: center;
-    align-items: center;
+    
+    /* Add support for -webkit-fill-available */
+    @supports (-webkit-touch-callout: none) {
+        height: -webkit-fill-available;
+        min-height: -webkit-fill-available;
+    }
 }
 
 .mobile-view {
-    width: min(100vw,393px);
-    height: min(100vh,852px);
+    width: 100%;
+    height: 100%;
     background: #FFF5EA;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    padding: 48px 24px;
+    /* Adjust padding to account for safe areas */
+    padding: max(16px, 3vh) max(16px, 3vw);
+    padding-top: max(16px, 3vh, env(safe-area-inset-top));
+    padding-bottom: max(16px, 3vh, env(safe-area-inset-bottom));
 }
 
 /* Header Styles */
 .header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: max(20px, 4vh);
+    flex-shrink: 0;
 }
 
 .title {
-    font-size: 35px;
+    font-size: min(35px, 5vh);
     font-weight: 700;
-    margin-bottom: 16px;
+    margin-bottom: min(16px, 2vh);
     line-height: 1.2;
     color: #000;
 }
 
 .subtitle {
-    font-size: 18px;
+    font-size: min(18px, 2.5vh);
     color: #666;
-    line-height: 1.5;
+    line-height: 1.4;
 }
 
 /* Card Styles */
@@ -154,79 +183,100 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 40px;
+    margin-bottom: max(20px, 4vh);
     perspective: 1000px;
     transform-style: preserve-3d;
+    min-height: 0;
 }
 
 .card-carousel {
     width: 100%;
-    height: 420px;
+    height: 100%;
     position: relative;
     overflow: visible;
 }
 
 .card {
     width: 90%;
-    height: 100%;
+    height: min(400px, 60vh); /* Prevent cards from being too tall */
     position: absolute;
     left: 50%;
-    top: 0;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
     border-radius: 24px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: all 0.5s ease;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 32px;
+    justify-content: center; /* Center content vertically */
+    padding: max(16px, 3vh);
     text-align: center;
-    will-change: transform;
-    transform-origin: center center;
-    transform: translateX(-50%) scale(0.8);
     opacity: 0;
-    cursor: grab;
-    user-select: none;
 }
 
 .card.prev {
-    transform: translateX(-100%) scale(0.85);
+    transform: translate(-100%, -50%) scale(0.85);
     opacity: 0.7;
     z-index: 1;
 }
 
 .card.current {
-    transform: translateX(-50%) scale(1);
+    transform: translate(-50%, -50%) scale(1);
     opacity: 1;
     z-index: 2;
 }
 
 .card.next {
-    transform: translateX(0%) scale(0.85);
+    transform: translate(0%, -50%) scale(0.85);
     opacity: 0.7;
     z-index: 1;
 }
 
 .card-text {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;
-    line-height: 1.5;
+    font-size: min(15px, 2.2vh);
+    line-height: 1.4;
     color: #333;
     word-wrap: break-word;
-    max-width: 100%;
-    text-align: center;
+    padding: 10px;
 }
 
-/* Media Queries */
+.button {
+    background: #333;
+    color: white;
+    border: none;
+    padding: min(16px, 2vh) min(32px, 4vh);
+    border-radius: 9999px;
+    font-size: min(20px, 2.8vh);
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    width: fit-content;
+    z-index: 3;
+    flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+/* Desktop styles */
 @media (min-width: 768px) {
     #main-content {
-        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .mobile-view {
+        width: min(100vw, 393px);
+        height: min(100vh, 852px);
+        height: min(100dvh, 852px);
         margin: auto;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 48px 24px;
+    }
+}
+
+/* Fix for iOS */
+@supports (-webkit-touch-callout: none) {
+    .mobile-view {
+        height: -webkit-fill-available;
     }
 }
 
@@ -323,4 +373,205 @@ body {
     100% {
         border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
     }
+}
+
+
+#mute-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ff5a5f;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+/* Add blur effect to main content when popup shows */
+#main-content {
+    transition: filter 0.3s ease;
+}
+
+body.popup-active {
+    overflow: hidden; /* Prevents scrolling when popup is active */
+}
+
+body.popup-active #main-content {
+    filter: blur(10px);
+}
+
+/* Ensure mute button stays fixed on screen */
+#mute-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1001; /* Higher than popup z-index */
+}
+
+.button {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 9999px;
+    font-size: 20px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    width: fit-content;
+    z-index: 3;
+}
+
+.popup-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    background: linear-gradient(135deg, #F72C5B, #FF2929);
+    /* background: #B82132; */
+    padding: 40px;
+    border-radius: 30px;
+    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.3);
+    text-align: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 85vh;
+    width: 320px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    overflow-y: none;
+    max-height: 95vh;
+}
+
+.popup-card.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.popup-content {
+    color: #fff;
+    font-size: 20px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.popup-hearts {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+/* Farewell Screen */
+.farewell-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease;
+}
+
+.farewell-screen.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.farewell-text {
+    color: white;
+    font-size: 32px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.farewell-screen.show .farewell-text {
+    animation: farewell 2s ease forwards;
+}
+
+/* Particle Effects */
+.particle {
+    position: fixed;
+    pointer-events: none;
+    animation: particleFloat 3s ease-in infinite;
+}
+
+/* Animations */
+@keyframes heartbeat {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    14% { transform: translate(-50%, -50%) scale(1.1); }
+    28% { transform: translate(-50%, -50%) scale(1); }
+    42% { transform: translate(-50%, -50%) scale(1.1); }
+    70% { transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes farewell {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+.sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+    animation: sparkle 1.5s ease-in-out infinite;
+    opacity: 0;
+}
+
+@keyframes sparkle {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0); opacity: 0; }
 }
