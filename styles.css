@@ -233,7 +233,7 @@ body {
 }
 
 .card-text {
-    font-size: min(15px, 2.2vh);
+    font-size: min(16px, 2.3vh);
     line-height: 1.4;
     color: #333;
     word-wrap: break-word;
